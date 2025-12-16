@@ -17,10 +17,18 @@
 <body>
     <!-- Header with Logo -->
     <header class="header">
-        <div class="container">
+        <div class="container header-container">
             <div class="logo">
                 <img id="businessLogo" src="" alt="" style="display: none; max-height: 60px; margin-right: 15px;">
                 <h1 id="businessName">KAKULE</h1>
+            </div>
+            <div class="language-switcher" id="langSwitcher">
+                <button class="lang-btn active" data-lang="tr">
+                    <span class="flag-icon">🇹🇷</span> TR
+                </button>
+                <button class="lang-btn" data-lang="en">
+                    <span class="flag-icon">🇬🇧</span> EN
+                </button>
             </div>
         </div>
     </header>
@@ -71,15 +79,61 @@
         </div>
     </div>
 
+    <!-- Allergen Legend Section -->
+    <section class="allergen-legend-section">
+        <div class="container">
+            <h2 class="allergen-legend-title" id="allergenLegendTitle">Alerjen Bilgileri</h2>
+            <p class="allergen-legend-subtitle" id="allergenLegendSubtitle">Menümüzde kullanılan alerjen simgeleri</p>
+            <div class="allergen-legend-grid" id="allergenLegendGrid">
+                <!-- Allergens will be loaded by JavaScript -->
+            </div>
+        </div>
+    </section>
+
+    <!-- Allergen Tooltip (shown on hover) -->
+    <div class="allergen-tooltip" id="allergenTooltip">
+        <div class="allergen-tooltip-header">
+            <span class="allergen-tooltip-icon"></span>
+            <span class="allergen-tooltip-name"></span>
+        </div>
+        <p class="allergen-tooltip-desc"></p>
+    </div>
+
     <!-- Footer -->
     <footer class="footer">
         <div class="container">
             <p>© 2025 QR Menü. Tüm hakları saklıdır.</p>
+            <button class="admin-access-btn" id="adminAccessBtn">
+                <span class="admin-icon">⚙️</span> Yönetim Paneli
+            </button>
         </div>
     </footer>
 
-    <!-- Include XLSX library for Excel parsing (Still needed if we move some logic but technically not for index.html anymore, keeping for safety or removing? Removing since it's admin only) -->
-    <!-- Actually, let's keep app.js but we might need to be careful about errors -->
+    <!-- Admin Login Modal -->
+    <div class="login-modal" id="loginModal">
+        <div class="login-modal-content">
+            <button class="login-close-btn" id="loginCloseBtn">&times;</button>
+            <div class="login-header">
+                <span class="login-icon">🔐</span>
+                <h2>Yönetim Paneli Girişi</h2>
+            </div>
+            <form id="loginForm">
+                <div class="login-form-group">
+                    <label for="loginUsername">Kullanıcı Adı</label>
+                    <input type="text" id="loginUsername" class="login-input" placeholder="Kullanıcı adınızı girin"
+                        required autocomplete="username">
+                </div>
+                <div class="login-form-group">
+                    <label for="loginPassword">Parola</label>
+                    <input type="password" id="loginPassword" class="login-input" placeholder="Parolanızı girin"
+                        required autocomplete="current-password">
+                </div>
+                <div class="login-error" id="loginError"></div>
+                <button type="submit" class="login-submit-btn">Giriş Yap</button>
+            </form>
+        </div>
+    </div>
+
     <script src="app.js"></script>
 </body>
 

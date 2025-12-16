@@ -46,20 +46,73 @@ body {
 }
 
 /* ==================== Header ==================== */
+/* ==================== Header ==================== */
 .header {
     background: var(--bg-secondary);
-    padding: 2rem 0 1rem;
-    text-align: center;
+    padding: 1rem 0;
     border-bottom: 1px solid var(--border-color);
+}
+
+.header-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    position: relative;
+}
+
+.logo {
+    display: flex;
+    align-items: center;
+    justify-content: center;
 }
 
 .logo h1 {
     font-family: 'Playfair Display', serif;
-    font-size: 3rem;
+    font-size: 2.5rem;
     font-weight: 700;
     color: var(--text-primary);
-    letter-spacing: 0.3em;
+    letter-spacing: 0.1em;
     margin: 0;
+}
+
+.language-switcher {
+    display: flex;
+    gap: 0.5rem;
+    position: absolute;
+    right: 20px;
+    top: 50%;
+    transform: translateY(-50%);
+}
+
+.lang-btn {
+    display: flex;
+    align-items: center;
+    gap: 0.25rem;
+    padding: 0.5rem 0.75rem;
+    background: transparent;
+    border: 1px solid var(--border-color);
+    border-radius: 20px;
+    cursor: pointer;
+    font-size: 0.9rem;
+    font-weight: 500;
+    color: var(--text-secondary);
+    transition: var(--transition);
+}
+
+.lang-btn .flag-icon {
+    font-size: 1.2rem;
+    line-height: 1;
+}
+
+.lang-btn:hover {
+    background: var(--bg-primary);
+    color: var(--text-primary);
+}
+
+.lang-btn.active {
+    background: var(--primary-color);
+    color: white;
+    border-color: var(--primary-color);
 }
 
 /* ==================== Main Tabs ==================== */
@@ -285,6 +338,239 @@ body {
     color: var(--text-primary);
 }
 
+/* ==================== Allergens ==================== */
+.product-allergens,
+.modal-allergens {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+    margin-top: 0.5rem;
+}
+
+.allergen-icon {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 28px;
+    height: 28px;
+    font-size: 1.1rem;
+    background: var(--bg-primary);
+    border-radius: 50%;
+    cursor: help;
+    position: relative;
+    transition: var(--transition);
+    border: 1px solid var(--border-color);
+}
+
+.allergen-icon:hover {
+    transform: scale(1.2);
+    background: var(--bg-secondary);
+    box-shadow: var(--shadow-md);
+}
+
+/* Tooltip for allergen */
+.allergen-icon::after {
+    content: attr(title);
+    position: absolute;
+    bottom: 100%;
+    left: 50%;
+    transform: translateX(-50%);
+    background: var(--text-primary);
+    color: white;
+    padding: 0.35rem 0.6rem;
+    border-radius: 4px;
+    font-size: 0.75rem;
+    white-space: nowrap;
+    opacity: 0;
+    visibility: hidden;
+    transition: opacity 0.2s, visibility 0.2s;
+    pointer-events: none;
+    z-index: 100;
+    margin-bottom: 5px;
+}
+
+.allergen-icon::before {
+    content: '';
+    position: absolute;
+    bottom: 100%;
+    left: 50%;
+    transform: translateX(-50%);
+    border: 5px solid transparent;
+    border-top-color: var(--text-primary);
+    opacity: 0;
+    visibility: hidden;
+    transition: opacity 0.2s, visibility 0.2s;
+    margin-bottom: -5px;
+}
+
+.allergen-icon:hover::after,
+.allergen-icon:hover::before {
+    opacity: 1;
+    visibility: visible;
+}
+
+.modal-allergens {
+    margin-bottom: 1rem;
+}
+
+.modal-allergens .allergen-icon {
+    width: 36px;
+    height: 36px;
+    font-size: 1.3rem;
+}
+
+/* Enhanced Allergen Tooltip */
+.allergen-tooltip {
+    position: fixed;
+    z-index: 9999;
+    background: var(--bg-secondary);
+    border-radius: var(--border-radius);
+    box-shadow: var(--shadow-lg);
+    padding: 1rem;
+    max-width: 280px;
+    opacity: 0;
+    visibility: hidden;
+    transition: opacity 0.2s, visibility 0.2s;
+    pointer-events: none;
+    border: 1px solid var(--border-color);
+}
+
+.allergen-tooltip.visible {
+    opacity: 1;
+    visibility: visible;
+}
+
+.allergen-tooltip-header {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    margin-bottom: 0.5rem;
+    padding-bottom: 0.5rem;
+    border-bottom: 1px solid var(--border-color);
+}
+
+.allergen-tooltip-icon {
+    font-size: 1.5rem;
+}
+
+.allergen-tooltip-name {
+    font-weight: 600;
+    font-size: 1rem;
+    color: var(--text-primary);
+}
+
+.allergen-tooltip-desc {
+    font-size: 0.85rem;
+    color: var(--text-secondary);
+    line-height: 1.5;
+    margin: 0;
+}
+
+/* Allergen Legend Section */
+.allergen-legend-section {
+    background: var(--bg-secondary);
+    padding: 3rem 0;
+    margin-top: 2rem;
+    border-top: 1px solid var(--border-color);
+}
+
+.allergen-legend-title {
+    font-family: 'Playfair Display', serif;
+    font-size: 1.75rem;
+    font-weight: 600;
+    color: var(--text-primary);
+    margin-bottom: 0.5rem;
+    text-align: center;
+}
+
+.allergen-legend-subtitle {
+    text-align: center;
+    color: var(--text-secondary);
+    margin-bottom: 2rem;
+    font-size: 0.95rem;
+}
+
+.allergen-legend-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+    gap: 1rem;
+}
+
+.allergen-legend-item {
+    display: flex;
+    gap: 1rem;
+    padding: 1rem;
+    background: var(--bg-primary);
+    border-radius: var(--border-radius);
+    transition: var(--transition);
+}
+
+.allergen-legend-item:hover {
+    transform: translateY(-2px);
+    box-shadow: var(--shadow-md);
+}
+
+.allergen-legend-icon {
+    font-size: 2rem;
+    width: 50px;
+    height: 50px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: var(--bg-secondary);
+    border-radius: 50%;
+    flex-shrink: 0;
+    border: 2px solid var(--border-color);
+}
+
+.allergen-legend-content {
+    flex: 1;
+}
+
+.allergen-legend-name {
+    font-weight: 600;
+    color: var(--text-primary);
+    margin-bottom: 0.25rem;
+    font-size: 1rem;
+}
+
+.allergen-legend-desc {
+    font-size: 0.85rem;
+    color: var(--text-secondary);
+    line-height: 1.4;
+}
+
+/* Admin Allergen Checkboxes */
+.allergen-checkboxes {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+    gap: 0.5rem;
+    margin-top: 0.5rem;
+}
+
+.allergen-checkbox {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.5rem 0.75rem;
+    background: var(--bg-primary);
+    border-radius: var(--border-radius-sm);
+    cursor: pointer;
+    font-size: 0.9rem;
+    transition: var(--transition);
+}
+
+.allergen-checkbox:hover {
+    background: var(--bg-gray);
+}
+
+.allergen-checkbox input[type="checkbox"] {
+    width: 18px;
+    height: 18px;
+    accent-color: var(--primary-color);
+    cursor: pointer;
+}
+
 /* ==================== Product Modal ==================== */
 .product-modal {
     display: none;
@@ -336,6 +622,29 @@ body {
     to {
         transform: translateY(0);
         opacity: 1;
+    }
+}
+
+@keyframes shake {
+
+    0%,
+    100% {
+        transform: translateX(0);
+    }
+
+    10%,
+    30%,
+    50%,
+    70%,
+    90% {
+        transform: translateX(-5px);
+    }
+
+    20%,
+    40%,
+    60%,
+    80% {
+        transform: translateX(5px);
     }
 }
 
@@ -610,6 +919,150 @@ select.form-input {
     background: #f0f0f0;
 }
 
+/* Theme Color Picker */
+.theme-color-picker {
+    background: var(--bg-primary);
+    padding: 1rem;
+    border-radius: var(--border-radius);
+    margin-top: 0.5rem;
+}
+
+.color-presets {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+    margin-bottom: 1rem;
+}
+
+.color-preset {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    border: 3px solid transparent;
+    cursor: pointer;
+    transition: var(--transition);
+    box-shadow: var(--shadow-sm);
+}
+
+.color-preset:hover {
+    transform: scale(1.15);
+    box-shadow: var(--shadow-md);
+}
+
+.color-preset.active {
+    border-color: var(--text-primary);
+    transform: scale(1.1);
+}
+
+.custom-color-row {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    padding-top: 0.5rem;
+    border-top: 1px solid var(--border-color);
+}
+
+.custom-color-row label {
+    font-weight: 500;
+    margin: 0;
+}
+
+.custom-color-row input[type="color"] {
+    width: 50px;
+    height: 40px;
+    border: none;
+    border-radius: var(--border-radius-sm);
+    cursor: pointer;
+    padding: 0;
+}
+
+.custom-color-row input[type="color"]::-webkit-color-swatch-wrapper {
+    padding: 2px;
+}
+
+.custom-color-row input[type="color"]::-webkit-color-swatch {
+    border-radius: var(--border-radius-sm);
+    border: 1px solid var(--border-color);
+}
+
+#currentColorCode {
+    font-family: monospace;
+    font-size: 0.95rem;
+    color: var(--text-secondary);
+    background: var(--bg-secondary);
+    padding: 0.25rem 0.5rem;
+    border-radius: var(--border-radius-sm);
+}
+
+/* Toggle Switch */
+.toggle-label {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    cursor: pointer;
+}
+
+.toggle-text {
+    font-weight: 600;
+    color: var(--text-primary);
+}
+
+.toggle-switch {
+    position: relative;
+    width: 52px;
+    height: 28px;
+}
+
+.toggle-switch input {
+    opacity: 0;
+    width: 0;
+    height: 0;
+}
+
+.toggle-slider {
+    position: absolute;
+    cursor: pointer;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: #ccc;
+    transition: var(--transition);
+    border-radius: 28px;
+}
+
+.toggle-slider::before {
+    position: absolute;
+    content: "";
+    height: 22px;
+    width: 22px;
+    left: 3px;
+    bottom: 3px;
+    background-color: white;
+    transition: var(--transition);
+    border-radius: 50%;
+    box-shadow: var(--shadow-sm);
+}
+
+.toggle-switch input:checked+.toggle-slider {
+    background-color: var(--primary-color);
+}
+
+.toggle-switch input:checked+.toggle-slider::before {
+    transform: translateX(24px);
+}
+
+.toggle-status {
+    font-size: 0.9rem;
+    font-weight: 500;
+    color: var(--text-secondary);
+    min-width: 50px;
+}
+
+.toggle-status.active {
+    color: var(--primary-color);
+}
+
 .btn {
     padding: 1rem 2rem;
     border: none;
@@ -630,6 +1083,51 @@ select.form-input {
     transform: translateY(-2px);
     box-shadow: var(--shadow-lg);
     background: var(--primary-dark);
+}
+
+.btn-danger {
+    background: #c53030;
+    color: white;
+}
+
+.btn-danger:hover {
+    background: #9b2c2c;
+    transform: translateY(-2px);
+}
+
+/* Admin Credentials Section */
+.admin-credentials-section {
+    background: var(--bg-primary);
+    padding: 1rem;
+    border-radius: var(--border-radius);
+    margin-top: 1rem;
+}
+
+.admin-credentials-section>label {
+    font-weight: 600;
+    margin-bottom: 1rem;
+    display: block;
+}
+
+.credentials-row {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 1rem;
+    margin-bottom: 0.5rem;
+}
+
+.credential-field label {
+    font-size: 0.85rem;
+    font-weight: 500;
+    margin-bottom: 0.25rem;
+    display: block;
+}
+
+.settings-buttons {
+    display: flex;
+    gap: 0.75rem;
+    flex-wrap: wrap;
+    margin-top: 1.5rem;
 }
 
 .info-text {
@@ -825,8 +1323,8 @@ select.form-input {
 }
 
 .btn-delete {
-    background: var(--accent-color);
-    color: white;
+    background: #c53030;
+    color: #ffffff !important;
 }
 
 .btn-sm:hover {
@@ -907,4 +1405,168 @@ select.form-input {
         height: 50px;
         font-size: 1.25rem;
     }
+}
+
+/* ==================== Footer Admin Access ==================== */
+.footer .container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 1rem;
+}
+
+.admin-access-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.75rem 1.5rem;
+    background: transparent;
+    border: 1px solid var(--border-color);
+    border-radius: 25px;
+    color: var(--text-secondary);
+    font-size: 0.9rem;
+    cursor: pointer;
+    transition: var(--transition);
+}
+
+.admin-access-btn:hover {
+    background: var(--bg-gray);
+    color: var(--text-primary);
+    border-color: var(--primary-color);
+}
+
+.admin-icon {
+    font-size: 1.1rem;
+}
+
+/* ==================== Login Modal ==================== */
+.login-modal {
+    display: none;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.7);
+    backdrop-filter: blur(8px);
+    z-index: 3000;
+    align-items: center;
+    justify-content: center;
+    animation: fadeIn 0.3s ease-out;
+}
+
+.login-modal.active {
+    display: flex;
+}
+
+.login-modal-content {
+    background: var(--bg-secondary);
+    border-radius: var(--border-radius);
+    width: 90%;
+    max-width: 400px;
+    padding: 2rem;
+    box-shadow: var(--shadow-lg);
+    animation: slideUp 0.4s ease-out;
+    position: relative;
+}
+
+.login-close-btn {
+    position: absolute;
+    top: 1rem;
+    right: 1rem;
+    background: none;
+    border: none;
+    font-size: 1.5rem;
+    color: var(--text-secondary);
+    cursor: pointer;
+    width: 32px;
+    height: 32px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 50%;
+    transition: var(--transition);
+}
+
+.login-close-btn:hover {
+    background: var(--bg-gray);
+    color: var(--text-primary);
+}
+
+.login-header {
+    text-align: center;
+    margin-bottom: 2rem;
+}
+
+.login-icon {
+    font-size: 3rem;
+    display: block;
+    margin-bottom: 0.5rem;
+}
+
+.login-header h2 {
+    font-family: 'Playfair Display', serif;
+    font-size: 1.5rem;
+    font-weight: 600;
+    color: var(--text-primary);
+    margin: 0;
+}
+
+.login-form-group {
+    margin-bottom: 1.25rem;
+}
+
+.login-form-group label {
+    display: block;
+    margin-bottom: 0.5rem;
+    font-weight: 500;
+    color: var(--text-primary);
+    font-size: 0.9rem;
+}
+
+.login-input {
+    width: 100%;
+    padding: 0.875rem 1rem;
+    border: 2px solid var(--border-color);
+    border-radius: var(--border-radius-sm);
+    font-size: 1rem;
+    transition: var(--transition);
+    box-sizing: border-box;
+}
+
+.login-input:focus {
+    outline: none;
+    border-color: var(--primary-color);
+    box-shadow: 0 0 0 3px rgba(90, 108, 87, 0.1);
+}
+
+.login-error {
+    color: #c53030;
+    font-size: 0.875rem;
+    margin-bottom: 1rem;
+    text-align: center;
+    display: none;
+}
+
+.login-error.show {
+    display: block;
+}
+
+.login-submit-btn {
+    width: 100%;
+    padding: 1rem;
+    background: var(--primary-color);
+    color: white;
+    border: none;
+    border-radius: var(--border-radius-sm);
+    font-size: 1rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: var(--transition);
+}
+
+.login-submit-btn:hover {
+    background: var(--primary-dark);
+    transform: translateY(-2px);
+    box-shadow: var(--shadow-md);
 }

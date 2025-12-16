@@ -106,8 +106,80 @@
                         <small class="help-text">Logo yüklemek için dosya seçin. Logo silmek için ayarları
                             sıfırlayın.</small>
                     </div>
-                    <button class="btn btn-primary" id="saveSettingsBtn">Ayarları Kaydet</button>
-                    <button class="btn btn-secondary" id="clearLogoBtn" style="margin-left: 10px;">Logo'yu Sil</button>
+
+                    <!-- Theme Color Section -->
+                    <div class="form-group">
+                        <label>Tema Rengi:</label>
+                        <div class="theme-color-picker">
+                            <div class="color-presets">
+                                <button type="button" class="color-preset" data-color="#5a6c57"
+                                    style="background: #5a6c57;" title="Yeşil (Varsayılan)"></button>
+                                <button type="button" class="color-preset" data-color="#4a5568"
+                                    style="background: #4a5568;" title="Gri"></button>
+                                <button type="button" class="color-preset" data-color="#c53030"
+                                    style="background: #c53030;" title="Kırmızı"></button>
+                                <button type="button" class="color-preset" data-color="#dd6b20"
+                                    style="background: #dd6b20;" title="Turuncu"></button>
+                                <button type="button" class="color-preset" data-color="#d69e2e"
+                                    style="background: #d69e2e;" title="Sarı"></button>
+                                <button type="button" class="color-preset" data-color="#38a169"
+                                    style="background: #38a169;" title="Açık Yeşil"></button>
+                                <button type="button" class="color-preset" data-color="#319795"
+                                    style="background: #319795;" title="Turkuaz"></button>
+                                <button type="button" class="color-preset" data-color="#3182ce"
+                                    style="background: #3182ce;" title="Mavi"></button>
+                                <button type="button" class="color-preset" data-color="#805ad5"
+                                    style="background: #805ad5;" title="Mor"></button>
+                                <button type="button" class="color-preset" data-color="#d53f8c"
+                                    style="background: #d53f8c;" title="Pembe"></button>
+                                <button type="button" class="color-preset" data-color="#1a202c"
+                                    style="background: #1a202c;" title="Koyu"></button>
+                                <button type="button" class="color-preset" data-color="#744210"
+                                    style="background: #744210;" title="Kahverengi"></button>
+                            </div>
+                            <div class="custom-color-row">
+                                <label for="customThemeColor">Özel Renk:</label>
+                                <input type="color" id="customThemeColor" value="#5a6c57">
+                                <span id="currentColorCode">#5a6c57</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Allergen System Toggle -->
+                    <div class="form-group">
+                        <label class="toggle-label">
+                            <span class="toggle-text">Alerjen Sistemi:</span>
+                            <div class="toggle-switch">
+                                <input type="checkbox" id="allergenSystemToggle" checked>
+                                <span class="toggle-slider"></span>
+                            </div>
+                            <span class="toggle-status" id="allergenToggleStatus">Aktif</span>
+                        </label>
+                        <small class="help-text">Bu özellik açıkken ürünlerde alerjen bilgileri gösterilir ve menüde
+                            alerjen listesi görünür.</small>
+                    </div>
+
+                    <!-- Admin Credentials Section -->
+                    <div class="form-group admin-credentials-section">
+                        <label>Yönetici Giriş Bilgileri:</label>
+                        <div class="credentials-row">
+                            <div class="credential-field">
+                                <label for="adminUsernameInput">Kullanıcı Adı:</label>
+                                <input type="text" id="adminUsernameInput" class="form-input" placeholder="admin">
+                            </div>
+                            <div class="credential-field">
+                                <label for="adminPasswordInput">Parola:</label>
+                                <input type="password" id="adminPasswordInput" class="form-input" placeholder="••••">
+                            </div>
+                        </div>
+                        <small class="help-text">⚠️ Varsayılan: admin / 1234 - Güvenliğiniz için değiştirin!</small>
+                    </div>
+
+                    <div class="settings-buttons">
+                        <button class="btn btn-primary" id="saveSettingsBtn">Ayarları Kaydet</button>
+                        <button class="btn btn-secondary" id="clearLogoBtn">Logo'yu Sil</button>
+                        <button class="btn btn-danger" id="logoutBtn">Çıkış Yap</button>
+                    </div>
                     <div id="settingsStatus" class="status-message"></div>
                 </div>
             </div>
@@ -212,8 +284,12 @@
             </div>
             <div class="modal-body">
                 <div class="form-group">
-                    <label for="editProductName">Ürün Adı:</label>
-                    <input type="text" id="editProductName" class="form-input" readonly>
+                    <label for="editProductName">Ürün Adı (TR):</label>
+                    <input type="text" id="editProductName" class="form-input">
+                </div>
+                <div class="form-group">
+                    <label for="editProductNameEn">Ürün Adı (EN):</label>
+                    <input type="text" id="editProductNameEn" class="form-input">
                 </div>
                 <div class="form-group">
                     <label for="editProductMainCategory">Ana Kategori:</label>
@@ -227,8 +303,12 @@
                     <input type="text" id="editProductSubCategory" class="form-input">
                 </div>
                 <div class="form-group">
-                    <label for="editProductDescription">Açıklama:</label>
-                    <textarea id="editProductDescription" class="form-input" rows="3"></textarea>
+                    <label for="editProductDescription">Açıklama (TR):</label>
+                    <textarea id="editProductDescription" class="form-input" rows="2"></textarea>
+                </div>
+                <div class="form-group">
+                    <label for="editProductDescriptionEn">Açıklama (EN):</label>
+                    <textarea id="editProductDescriptionEn" class="form-input" rows="2"></textarea>
                 </div>
                 <div class="form-group">
                     <label for="editProductPrice">Fiyat (₺):</label>
@@ -242,6 +322,25 @@
                 <div class="form-group">
                     <label>Veya Bilgisayardan Yükle:</label>
                     <input type="file" id="editProductImageFile" accept="image/*" class="file-input">
+                </div>
+                <!-- Allergens Section -->
+                <div class="form-group">
+                    <label>Alerjenler:</label>
+                    <div class="allergen-checkboxes" id="editAllergenCheckboxes">
+                        <label class="allergen-checkbox"><input type="checkbox" value="gluten"> 🌾 Gluten</label>
+                        <label class="allergen-checkbox"><input type="checkbox" value="dairy"> 🥛 Süt Ürünleri</label>
+                        <label class="allergen-checkbox"><input type="checkbox" value="eggs"> 🥚 Yumurta</label>
+                        <label class="allergen-checkbox"><input type="checkbox" value="fish"> 🐟 Balık</label>
+                        <label class="allergen-checkbox"><input type="checkbox" value="shellfish"> 🦐 Kabuklu Deniz
+                            Ürünleri</label>
+                        <label class="allergen-checkbox"><input type="checkbox" value="nuts"> 🌰 Kuruyemiş</label>
+                        <label class="allergen-checkbox"><input type="checkbox" value="peanuts"> 🥜 Yer Fıstığı</label>
+                        <label class="allergen-checkbox"><input type="checkbox" value="soy"> 🫘 Soya</label>
+                        <label class="allergen-checkbox"><input type="checkbox" value="sesame"> ⚪ Susam</label>
+                        <label class="allergen-checkbox"><input type="checkbox" value="celery"> 🥬 Kereviz</label>
+                        <label class="allergen-checkbox"><input type="checkbox" value="mustard"> 🟡 Hardal</label>
+                        <label class="allergen-checkbox"><input type="checkbox" value="sulfites"> 🍷 Sülfitler</label>
+                    </div>
                 </div>
                 <button class="btn btn-primary" id="saveEditBtn">Kaydet</button>
                 <div id="editStatus" class="status-message"></div>
@@ -258,8 +357,12 @@
             </div>
             <div class="modal-body">
                 <div class="form-group">
-                    <label for="addProductName">Ürün Adı: *</label>
+                    <label for="addProductName">Ürün Adı (TR): *</label>
                     <input type="text" id="addProductName" class="form-input" placeholder="Örn: Türk Kahvesi" required>
+                </div>
+                <div class="form-group">
+                    <label for="addProductNameEn">Ürün Adı (EN):</label>
+                    <input type="text" id="addProductNameEn" class="form-input" placeholder="Ex: Turkish Coffee">
                 </div>
                 <div class="form-group">
                     <label for="addProductMainCategory">Ana Kategori: *</label>
@@ -279,9 +382,14 @@
                         placeholder="Yeni kategori adı">
                 </div>
                 <div class="form-group">
-                    <label for="addProductDescription">Açıklama:</label>
-                    <textarea id="addProductDescription" class="form-input" rows="3"
+                    <label for="addProductDescription">Açıklama (TR):</label>
+                    <textarea id="addProductDescription" class="form-input" rows="2"
                         placeholder="Ürün açıklaması, malzemeler..."></textarea>
+                </div>
+                <div class="form-group">
+                    <label for="addProductDescriptionEn">Açıklama (EN):</label>
+                    <textarea id="addProductDescriptionEn" class="form-input" rows="2"
+                        placeholder="Product description, ingredients..."></textarea>
                 </div>
                 <div class="form-group">
                     <label for="addProductPrice">Fiyat (₺): *</label>
@@ -296,6 +404,25 @@
                 <div class="form-group">
                     <label>Veya Bilgisayardan Yükle:</label>
                     <input type="file" id="addProductImageFile" accept="image/*" class="file-input">
+                </div>
+                <!-- Allergens Section -->
+                <div class="form-group">
+                    <label>Alerjenler:</label>
+                    <div class="allergen-checkboxes" id="addAllergenCheckboxes">
+                        <label class="allergen-checkbox"><input type="checkbox" value="gluten"> 🌾 Gluten</label>
+                        <label class="allergen-checkbox"><input type="checkbox" value="dairy"> 🥛 Süt Ürünleri</label>
+                        <label class="allergen-checkbox"><input type="checkbox" value="eggs"> 🥚 Yumurta</label>
+                        <label class="allergen-checkbox"><input type="checkbox" value="fish"> 🐟 Balık</label>
+                        <label class="allergen-checkbox"><input type="checkbox" value="shellfish"> 🦐 Kabuklu Deniz
+                            Ürünleri</label>
+                        <label class="allergen-checkbox"><input type="checkbox" value="nuts"> 🌰 Kuruyemiş</label>
+                        <label class="allergen-checkbox"><input type="checkbox" value="peanuts"> 🥜 Yer Fıstığı</label>
+                        <label class="allergen-checkbox"><input type="checkbox" value="soy"> 🫘 Soya</label>
+                        <label class="allergen-checkbox"><input type="checkbox" value="sesame"> ⚪ Susam</label>
+                        <label class="allergen-checkbox"><input type="checkbox" value="celery"> 🥬 Kereviz</label>
+                        <label class="allergen-checkbox"><input type="checkbox" value="mustard"> 🟡 Hardal</label>
+                        <label class="allergen-checkbox"><input type="checkbox" value="sulfites"> 🍷 Sülfitler</label>
+                    </div>
                 </div>
 
                 <button class="btn btn-primary" id="saveAddBtn">Ürün Ekle</button>
