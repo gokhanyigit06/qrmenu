@@ -202,7 +202,16 @@ function loadData() {
 }
 
 function saveData() {
-    localStorage.setItem('qr-menu-products', JSON.stringify(products));
+    try {
+        localStorage.setItem('qr-menu-products', JSON.stringify(products));
+    } catch (e) {
+        if (e.name === 'QuotaExceededError' || e.code === 22) {
+            alert('⚠️ Depolama alanı doldu! Çok fazla veya çok büyük resim yüklediniz. Lütfen bazı ürünleri veya resimleri silin.');
+        } else {
+            console.error('Kayıt hatası:', e);
+            alert('Veriler kaydedilirken bir hata oluştu.');
+        }
+    }
 }
 
 function saveSettings() {
@@ -574,6 +583,29 @@ function initAdminPage() {
         if (file) handlePriceUpdate(file);
     };
 
+    // Export Products
+    const exportBtn = document.getElementById('exportProductsBtn');
+    if (exportBtn) {
+        exportBtn.onclick = exportProductsToExcel;
+    }
+
+    // Percentage Price Adjustment
+    const percentageInput = document.getElementById('pricePercentage');
+    const applyPercentageBtn = document.getElementById('applyPercentageBtn');
+
+    if (percentageInput) {
+        percentageInput.addEventListener('input', updatePercentagePreview);
+    }
+
+    if (applyPercentageBtn) {
+        applyPercentageBtn.onclick = applyPercentagePriceChange;
+    }
+
+    const applyRoundBtn = document.getElementById('applyRoundBtn');
+    if (applyRoundBtn) {
+        applyRoundBtn.onclick = applyRoundPrices;
+    }
+
     document.getElementById('openAddProductBtn').onclick = () => {
         document.getElementById('addProductModal').classList.add('active');
         updateSubCategoryOptions(document.getElementById('addProductMainCategory').value);
@@ -883,6 +915,181 @@ function initImageUploads() {
     }
 }
 
+// ==================== Export Products to Excel ====================
+function exportProductsToExcel() {
+    if (products.length === 0) {
+        alert('Dışa aktarılacak ürün bulunmamaktadır.');
+        return;
+    }
+
+    // Excel cell character limit is 32767
+    const EXCEL_MAX_CHARS = 32767;
+
+    // Prepare data for export
+    const exportData = products.map(product => {
+        let imageValue = product.image || '';
+
+        // Check if image is Base64 and too long for Excel
+        if (imageValue.startsWith('data:') && imageValue.length > EXCEL_MAX_CHARS) {
+            imageValue = '[Yerelde Yüklü Resim - Çok uzun]';
+        }
+
+        return {
+            'Ana Kategori': product.mainCategory || '',
+            'Alt Kategori': product.subCategory || '',
+            'Ürün Adı': product.name || '',
+            'Ürün Adı (EN)': product.name_en || '',
+            'Açıklama': product.description || '',
+            'Açıklama (EN)': product.description_en || '',
+            'Fiyat': product.price || 0,
+            'Resim URL': imageValue,
+            'Alerjenler': product.allergens ? product.allergens.join(', ') : ''
+        };
+    });
+
+    // Create workbook and worksheet
+    const worksheet = XLSX.utils.json_to_sheet(exportData);
+    const workbook = XLSX.utils.book_new();
+    XLSX.utils.book_append_sheet(workbook, worksheet, 'Ürünler');
+
+    // Set column widths
+    worksheet['!cols'] = [
+        { wch: 15 }, // Ana Kategori
+        { wch: 15 }, // Alt Kategori
+        { wch: 25 }, // Ürün Adı
+        { wch: 25 }, // Ürün Adı (EN)
+        { wch: 40 }, // Açıklama
+        { wch: 40 }, // Açıklama (EN)
+        { wch: 10 }, // Fiyat
+        { wch: 50 }, // Resim URL
+        { wch: 30 }  // Alerjenler
+    ];
+
+    // Generate filename with date
+    const date = new Date();
+    const dateStr = date.toISOString().split('T')[0];
+    const filename = `urunler_${dateStr}.xlsx`;
+
+    // Download file
+    XLSX.writeFile(workbook, filename);
+
+    showStatus('updateStatus', `${products.length} ürün başarıyla dışa aktarıldı!`, 'success');
+}
+
+// ==================== Percentage Price Adjustment ====================
+function updatePercentagePreview() {
+    const percentageInput = document.getElementById('pricePercentage');
+    const previewDiv = document.getElementById('percentagePreview');
+
+    if (!percentageInput || !previewDiv) return;
+
+    const percentage = parseFloat(percentageInput.value);
+
+    if (isNaN(percentage) || percentage === 0) {
+        previewDiv.classList.remove('show');
+        return;
+    }
+
+    if (products.length === 0) {
+        previewDiv.innerHTML = '<p>Henüz ürün bulunmamaktadır.</p>';
+        previewDiv.classList.add('show');
+        return;
+    }
+
+    const isIncrease = percentage > 0;
+    const changeClass = isIncrease ? 'price-increase' : 'price-decrease';
+    const changeSymbol = isIncrease ? '↑' : '↓';
+    const changeText = isIncrease ? 'artış' : 'indirim';
+
+    // Show preview for first 3 products
+    const sampleProducts = products.slice(0, 3);
+    let previewHtml = `
+        <div class="preview-title">
+            ${changeSymbol} %${Math.abs(percentage).toFixed(1)} ${changeText} önizlemesi:
+        </div>
+    `;
+
+    sampleProducts.forEach(product => {
+        const oldPrice = product.price;
+        const newPrice = oldPrice * (1 + percentage / 100);
+
+        previewHtml += `
+            <div class="preview-example">
+                <span>${product.name}</span>
+                <span>
+                    <span class="old-price">₺${oldPrice.toFixed(2)}</span>
+                    →
+                    <span class="new-price ${changeClass}">₺${newPrice.toFixed(2)}</span>
+                </span>
+            </div>
+        `;
+    });
+
+    if (products.length > 3) {
+        previewHtml += `<p style="margin-top: 10px; color: #6b7280; font-size: 13px;">... ve ${products.length - 3} ürün daha</p>`;
+    }
+
+    previewDiv.innerHTML = previewHtml;
+    previewDiv.classList.add('show');
+}
+
+function applyPercentagePriceChange() {
+    const percentageInput = document.getElementById('pricePercentage');
+
+    if (!percentageInput) return;
+
+    const percentage = parseFloat(percentageInput.value);
+
+    if (isNaN(percentage) || percentage === 0) {
+        showStatus('percentageStatus', 'Lütfen geçerli bir yüzde değeri girin.', 'error');
+        return;
+    }
+
+    if (products.length === 0) {
+        showStatus('percentageStatus', 'Güncellenecek ürün bulunmamaktadır.', 'error');
+        return;
+    }
+
+    const isIncrease = percentage > 0;
+    const changeText = isIncrease ? 'artırılacak' : 'düşürülecek';
+
+    // Confirm action
+    const confirmMsg = `Tüm ürünlerin fiyatları %${Math.abs(percentage).toFixed(1)} oranında ${changeText}.\n\nToplam ${products.length} ürün etkilenecek.\n\nDevam etmek istiyor musunuz?`;
+
+    if (!confirm(confirmMsg)) {
+        return;
+    }
+
+    // Apply price changes
+    let updatedCount = 0;
+
+    products.forEach(product => {
+        const oldPrice = product.price;
+        const newPrice = oldPrice * (1 + percentage / 100);
+
+        // Round to 2 decimal places
+        product.price = Math.round(newPrice * 100) / 100;
+        updatedCount++;
+    });
+
+    // Save to localStorage
+    saveData();
+
+    // Update product list if visible
+    renderProductList();
+
+    // Clear input and preview
+    percentageInput.value = '';
+    const previewDiv = document.getElementById('percentagePreview');
+    if (previewDiv) {
+        previewDiv.classList.remove('show');
+    }
+
+    // Show success message
+    const actionText = isIncrease ? 'artırıldı' : 'düşürüldü';
+    showStatus('percentageStatus', `✅ ${updatedCount} ürünün fiyatı %${Math.abs(percentage).toFixed(1)} oranında ${actionText}!`, 'success');
+}
+
 function handleImageResize(file, callback) {
     if (!file) return;
 
@@ -893,9 +1100,9 @@ function handleImageResize(file, callback) {
             const canvas = document.createElement('canvas');
             const ctx = canvas.getContext('2d');
 
-            // Max dimensions
-            const MAX_WIDTH = 800;
-            const MAX_HEIGHT = 800;
+            // Reduced max dimensions to keep Base64 smaller
+            const MAX_WIDTH = 400;
+            const MAX_HEIGHT = 400;
             let width = img.width;
             let height = img.height;
 
@@ -915,8 +1122,14 @@ function handleImageResize(file, callback) {
             canvas.height = height;
             ctx.drawImage(img, 0, 0, width, height);
 
-            // Compress
-            const dataUrl = canvas.toDataURL('image/jpeg', 0.7);
+            // Lower quality for smaller file size (0.5 instead of 0.7)
+            const dataUrl = canvas.toDataURL('image/jpeg', 0.5);
+
+            // Warn if still very large
+            if (dataUrl.length > 30000) {
+                console.warn('Resim hala çok büyük:', Math.round(dataUrl.length / 1024) + 'KB');
+            }
+
             callback(dataUrl);
         };
         img.src = e.target.result;
@@ -1168,4 +1381,187 @@ function setupAdminLogin() {
             }, 10);
         }
     });
+}
+
+// ==================== Excel Upload Handlers ====================
+function handleExcelUpload(file) {
+    const reader = new FileReader();
+    reader.onload = (e) => {
+        try {
+            const data = new Uint8Array(e.target.result);
+            const workbook = XLSX.read(data, { type: 'array' });
+            const firstSheet = workbook.Sheets[workbook.SheetNames[0]];
+            const jsonData = XLSX.utils.sheet_to_json(firstSheet);
+
+            if (jsonData.length === 0) {
+                showStatus('uploadStatus', 'Excel dosyası boş veya okunamadı.', 'error');
+                return;
+            }
+
+            const clearBefore = document.getElementById('clearBeforeImport').checked;
+
+            if (clearBefore) {
+                products = [];
+            }
+
+            let addedCount = 0;
+            let updatedCount = 0;
+
+            jsonData.forEach(row => {
+                // Map columns (Flexible matching)
+                const name = row['Ürün Adı'] || row['Urun Adi'] || row['Name'];
+                const price = row['Fiyat'] || row['Price'];
+
+                if (!name || price === undefined) return;
+
+                const mainCat = row['Ana Kategori'] || row['Main Category'] || 'Diğer';
+                const subCat = row['Alt Kategori'] || row['Sub Category'] || 'Genel';
+                const desc = row['Açıklama'] || row['Description'] || '';
+                const descEn = row['Açıklama (EN)'] || row['Description (EN)'] || '';
+                const nameEn = row['Ürün Adı (EN)'] || row['Product Name (EN)'] || '';
+                const image = row['Resim URL'] || row['Image URL'] || '';
+                const allergensStr = row['Alerjenler'] || row['Allergens'] || '';
+
+                // Handle allergens (comma separated codes)
+                let allergens = [];
+                if (allergensStr) {
+                    // Try to match codes or names
+                    const parts = allergensStr.split(',').map(s => s.trim().toLowerCase());
+                    const validCodes = Object.keys(ALLERGENS);
+                    allergens = parts.filter(p => validCodes.includes(p));
+                }
+
+                // Check for existing
+                const existingIndex = products.findIndex(p => p.name === name);
+
+                const newProduct = {
+                    id: existingIndex >= 0 ? products[existingIndex].id : Date.now() + Math.random(), // Ensure unique ID if new
+                    name,
+                    name_en: nameEn,
+                    mainCategory: mainCat,
+                    subCategory: subCat,
+                    description: desc,
+                    description_en: descEn,
+                    price: parseFloat(price),
+                    image,
+                    allergens
+                };
+
+                if (existingIndex >= 0 && !clearBefore) {
+                    // Update existing
+                    products[existingIndex] = { ...products[existingIndex], ...newProduct, id: products[existingIndex].id };
+                    updatedCount++;
+                } else {
+                    // Add new
+                    products.push(newProduct);
+                    addedCount++;
+                }
+            });
+
+            saveData();
+            updateSubCategories();
+            renderProductList();
+
+            const msg = `İşlem tamamlandı: ${addedCount} eklendi, ${updatedCount} güncellendi.`;
+            showStatus('uploadStatus', msg, 'success');
+            document.getElementById('excelFile').value = ''; // Reset file input
+
+        } catch (err) {
+            console.error(err);
+            showStatus('uploadStatus', 'Excel dosyası işlenirken hata oluştu: ' + err.message, 'error');
+        }
+    };
+    reader.readAsArrayBuffer(file);
+}
+
+function handlePriceUpdate(file) {
+    const reader = new FileReader();
+    reader.onload = (e) => {
+        try {
+            const data = new Uint8Array(e.target.result);
+            const workbook = XLSX.read(data, { type: 'array' });
+            const firstSheet = workbook.Sheets[workbook.SheetNames[0]];
+            const jsonData = XLSX.utils.sheet_to_json(firstSheet);
+
+            if (jsonData.length === 0) {
+                showStatus('updateStatus', 'Dosya boş.', 'error');
+                return;
+            }
+
+            let updatedCount = 0;
+            let notFoundCount = 0;
+
+            jsonData.forEach(row => {
+                const name = row['Ürün Adı'] || row['Urun Adi'] || row['Name'];
+                const price = row['Yeni Fiyat'] || row['New Price'] || row['Fiyat'];
+
+                if (!name || price === undefined) return;
+
+                const product = products.find(p => p.name === name);
+                if (product) {
+                    product.price = parseFloat(price);
+                    updatedCount++;
+                } else {
+                    notFoundCount++;
+                }
+            });
+
+            saveData();
+            renderProductList();
+
+            let msg = `${updatedCount} ürün fiyatı güncellendi.`;
+            if (notFoundCount > 0) msg += ` (${notFoundCount} ürün bulunamadı)`;
+
+            showStatus('updateStatus', msg, 'success');
+            document.getElementById('priceFile').value = '';
+
+        } catch (err) {
+            console.error(err);
+            showStatus('updateStatus', 'Hata: ' + err.message, 'error');
+        }
+    };
+    reader.readAsArrayBuffer(file);
+}
+
+function applyRoundPrices() {
+    const method = document.getElementById('roundMethod').value;
+    if (products.length === 0) {
+        showStatus('roundStatus', 'İşlem yapılacak ürün yok.', 'error');
+        return;
+    }
+
+    if (!confirm('Tüm ürünlerin fiyatları seçilen yönteme göre yuvarlanacak. Bu işlem geri alınamaz.\nDevam etmek istiyor musunuz?')) {
+        return;
+    }
+
+    let changedCount = 0;
+
+    products.forEach(p => {
+        let oldPrice = p.price;
+        let newPrice = oldPrice;
+
+        switch (method) {
+            case 'round':
+                newPrice = Math.round(oldPrice);
+                break;
+            case 'ceil':
+                newPrice = Math.ceil(oldPrice);
+                break;
+            case 'floor':
+                newPrice = Math.floor(oldPrice);
+                break;
+            case 'nearest10':
+                newPrice = Math.round(oldPrice / 10) * 10;
+                break;
+        }
+
+        if (newPrice !== oldPrice) {
+            p.price = newPrice;
+            changedCount++;
+        }
+    });
+
+    saveData();
+    renderProductList();
+    showStatus('roundStatus', `✅ ${changedCount} ürünün fiyatı yuvarlandı!`, 'success');
 }

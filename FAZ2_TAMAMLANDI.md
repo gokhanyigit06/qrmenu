@@ -25,4 +25,9 @@ Aşağıdaki **fonksiyonel** geliştirmeler `app.js` içerisinde aktif olarak tu
 
 ## 🚀 Sonraki Adımlar
 
-Proje şu an **Eski Tasarım + Yeni Fonksiyonlar** modunda çalışıyor. Faz 3 (Form Validasyonları) planlandığı gibi devam edebilir.
+Proje şu an **Eski Tasarım + Yeni Fonksiyonlar** modunda çalışıyor.
+**Son Güncellemeler:**
+1.  `app.js` içerisine eksik olan `handleExcelUpload` ve `handlePriceUpdate` fonksiyonları eklendi.
+2.  LocalStorage limiti dolduğunda uygulamanın donmasını/hata vermesini önlemek için `saveData` fonksiyonuna hata yakalama (try-catch) eklendi.
+
+Faz 3 (Form Validasyonları) için hazırdır.

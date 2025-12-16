@@ -67,6 +67,71 @@
             color: #4f46e5;
             font-weight: 500;
         }
+
+        /* Percentage Price Section */
+        .percentage-section {
+            background: linear-gradient(135deg, #f0fdf4 0%, #dcfce7 100%);
+            border: 1px solid #86efac;
+            border-radius: 12px;
+            padding: 20px;
+            margin: 20px 0;
+        }
+
+        .percentage-input-row {
+            display: flex;
+            gap: 15px;
+            align-items: flex-end;
+            flex-wrap: wrap;
+        }
+
+        .percentage-input-row .btn {
+            height: 42px;
+            white-space: nowrap;
+        }
+
+        .percentage-preview {
+            margin-top: 15px;
+            padding: 12px;
+            background: white;
+            border-radius: 8px;
+            font-size: 14px;
+            display: none;
+        }
+
+        .percentage-preview.show {
+            display: block;
+        }
+
+        .percentage-preview .preview-title {
+            font-weight: 600;
+            margin-bottom: 8px;
+            color: #166534;
+        }
+
+        .percentage-preview .preview-example {
+            display: flex;
+            justify-content: space-between;
+            padding: 5px 0;
+            border-bottom: 1px dashed #e5e7eb;
+        }
+
+        .percentage-preview .old-price {
+            text-decoration: line-through;
+            color: #9ca3af;
+        }
+
+        .percentage-preview .new-price {
+            color: #16a34a;
+            font-weight: 600;
+        }
+
+        .percentage-preview .price-increase {
+            color: #dc2626;
+        }
+
+        .percentage-preview .price-decrease {
+            color: #16a34a;
+        }
     </style>
 </head>
 
@@ -212,7 +277,63 @@
             <!-- Update Tab -->
             <div class="tab-content" id="updateTab">
                 <div class="update-section">
-                    <h3>Toplu Fiyat Güncelleme</h3>
+                    <!-- Export Section -->
+                    <div class="export-section">
+                        <h3>📥 Ürün Listesini Dışa Aktar</h3>
+                        <p class="info-text">Mevcut tüm ürünleri Excel dosyası olarak indirin. Fiyatları düzenleyip
+                            tekrar yükleyebilirsiniz.</p>
+                        <button class="btn btn-secondary" id="exportProductsBtn">
+                            <span>📊</span> Ürünleri Excel Olarak İndir
+                        </button>
+                    </div>
+
+                    <hr class="section-divider">
+
+                    <!-- Percentage Price Adjustment Section -->
+                    <div class="percentage-section">
+                        <h3>📈 Yüzdelik Fiyat Değişikliği</h3>
+                        <p class="info-text">Tüm ürünlerin fiyatlarını belirli bir yüzde oranında artırın veya düşürün.
+                        </p>
+                        <div class="percentage-input-row">
+                            <div class="form-group" style="flex: 1; margin-bottom: 0;">
+                                <label for="pricePercentage">Yüzde Oranı (%):</label>
+                                <input type="number" id="pricePercentage" class="form-input"
+                                    placeholder="Örn: 10 veya -15" step="0.1">
+                                <small class="help-text">Pozitif değer = artış, Negatif değer = indirim</small>
+                            </div>
+                            <button class="btn btn-primary" id="applyPercentageBtn">
+                                <span>💰</span> Uygula
+                            </button>
+                        </div>
+                        <div class="percentage-preview" id="percentagePreview"></div>
+                        <div id="percentageStatus" class="status-message"></div>
+                    </div>
+
+                    <div class="percentage-section"
+                        style="background: linear-gradient(135deg, #eff6ff 0%, #dbeafe 100%); border-color: #93c5fd;">
+                        <h3>🔄 Fiyatları Yuvarla (Küsurat Temizle)</h3>
+                        <p class="info-text">Fiyatlardaki küsuratları otomatik olarak yuvarlayın.</p>
+                        <div class="percentage-input-row">
+                            <div class="form-group" style="flex: 1; margin-bottom: 0;">
+                                <label for="roundMethod">Yuvarlama Yöntemi:</label>
+                                <select id="roundMethod" class="form-input">
+                                    <option value="round">En Yakın Tam Sayıya (281.49 ➔ 281, 281.60 ➔ 282)</option>
+                                    <option value="ceil">Hep Yukarı (281.10 ➔ 282)</option>
+                                    <option value="floor">Hep Aşağı (281.90 ➔ 281)</option>
+                                    <option value="nearest10">En Yakın 10'luğa (281 ➔ 280, 286 ➔ 290)</option>
+                                </select>
+                            </div>
+                            <button class="btn btn-primary" id="applyRoundBtn" style="background-color: #2563eb;">
+                                <span>🔨</span> Uygula
+                            </button>
+                        </div>
+                        <div id="roundStatus" class="status-message"></div>
+                    </div>
+
+                    <hr class="section-divider">
+
+                    <!-- Import Section -->
+                    <h3>📤 Excel ile Fiyat Güncelleme</h3>
                     <p class="info-text">Sadece fiyat sütunu olan Excel dosyası yükleyin: <strong>Ürün Adı, Yeni
                             Fiyat</strong></p>
                     <input type="file" id="priceFile" accept=".xlsx,.xls" class="file-input">

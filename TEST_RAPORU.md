@@ -82,10 +82,9 @@
 
 ### Faz 2: UI/UX İyileştirme (TAMAMLANDI ✅)
 - [x] CSS değişkenleri ve modern renk paleti
-- [x] Glassmorphism efektleri
-- [x] Smooth animations
 - [x] Typography iyileştirmeleri
-- [x] Product card redesign
+- [x] Fiyat Yuvarlama / Küsürat Temizleme Özelliği
+- [x] Geri Alınan Premium Özellikler (Reverted)
 
 ### Faz 3: Form ve Validasyon (30 dk)
 - [ ] Gelişmiş form validasyonları
