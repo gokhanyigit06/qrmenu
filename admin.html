@@ -1,0 +1,312 @@
+<!DOCTYPE html>
+<html lang="tr">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>QR Menü - Yönetim Paneli</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Playfair+Display:wght@400;600;700&display=swap"
+        rel="stylesheet">
+    <style>
+        /* Admin specific overrides */
+        body {
+            background-color: #f3f4f6;
+            padding-bottom: 40px;
+        }
+
+        .admin-container {
+            max-width: 1000px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        .admin-header {
+            background: white;
+            padding: 20px;
+            border-radius: 12px;
+            margin-bottom: 20px;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .admin-content {
+            background: white;
+            padding: 20px;
+            border-radius: 12px;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+            min-height: 500px;
+        }
+
+        /* Reuse tab styles but make them fit the page */
+        .tabs {
+            border-bottom: 1px solid #e5e7eb;
+            margin-bottom: 20px;
+            display: flex;
+            gap: 10px;
+            overflow-x: auto;
+            padding-bottom: 5px;
+        }
+
+        .tab-content {
+            display: none;
+            animation: fadeIn 0.3s ease;
+        }
+
+        .tab-content.active {
+            display: block;
+        }
+
+        .back-link {
+            text-decoration: none;
+            color: #4f46e5;
+            font-weight: 500;
+        }
+    </style>
+</head>
+
+<body>
+
+    <div class="admin-container">
+        <div class="admin-header">
+            <div>
+                <h1>Yönetim Paneli</h1>
+                <p>QR Menü İçerik Yönetimi</p>
+            </div>
+            <a href="index.html" class="back-link">← Menüye Dön</a>
+        </div>
+
+        <div class="admin-content">
+            <!-- Tabs -->
+            <div class="tabs">
+                <button class="tab-btn active" data-tab="settings">Ayarlar</button>
+                <button class="tab-btn" data-tab="upload">Excel Yükle</button>
+                <button class="tab-btn" data-tab="update">Fiyat Güncelle</button>
+                <button class="tab-btn" data-tab="categories">Kategori Yönet</button>
+                <button class="tab-btn" data-tab="manage">Ürün Yönet</button>
+            </div>
+
+            <!-- Settings Tab -->
+            <div class="tab-content active" id="settingsTab">
+                <div class="settings-section">
+                    <h3>İşletme Ayarları</h3>
+                    <p class="info-text">💡 Logo yüklerseniz sadece logo görünür. Logo yoksa işletme adı görünür.</p>
+                    <div class="form-group">
+                        <label for="businessNameInput">İşletme Adı:</label>
+                        <input type="text" id="businessNameInput" class="form-input" placeholder="İşletme adını girin">
+                    </div>
+                    <div class="form-group">
+                        <label for="logoUpload">Logo Yükle:</label>
+                        <input type="file" id="logoUpload" accept="image/*" class="file-input">
+                        <small class="help-text">Logo yüklemek için dosya seçin. Logo silmek için ayarları
+                            sıfırlayın.</small>
+                    </div>
+                    <button class="btn btn-primary" id="saveSettingsBtn">Ayarları Kaydet</button>
+                    <button class="btn btn-secondary" id="clearLogoBtn" style="margin-left: 10px;">Logo'yu Sil</button>
+                    <div id="settingsStatus" class="status-message"></div>
+                </div>
+            </div>
+
+            <!-- Upload Tab -->
+            <div class="tab-content" id="uploadTab">
+                <div class="upload-section">
+                    <h3>Excel Dosyası Yükle</h3>
+                    <p class="info-text">Excel dosyanız şu sütunları içermelidir: <strong>Ana Kategori, Alt Kategori,
+                            Ürün Adı, Açıklama, Fiyat, Resim URL</strong></p>
+                    <p class="info-text">📥 <a href="templates.html" target="_blank"
+                            style="color: #667eea; font-weight: 600;">Örnek Excel şablonunu buradan indirebilirsiniz</a>
+                    </p>
+
+                    <div class="form-group">
+                        <label>
+                            <input type="checkbox" id="clearBeforeImport" style="margin-right: 8px;">
+                            Mevcut tüm ürünleri sil ve sadece Excel'deki ürünleri yükle
+                        </label>
+                        <small class="help-text">Bu seçenek işaretli değilse, yeni ürünler eklenir ve aynı isimli
+                            ürünler güncellenir.</small>
+                    </div>
+
+                    <input type="file" id="excelFile" accept=".xlsx,.xls" class="file-input">
+                    <button class="btn btn-primary" id="uploadBtn">Yükle ve İçe Aktar</button>
+                    <div id="uploadStatus" class="status-message"></div>
+                </div>
+            </div>
+
+            <!-- Update Tab -->
+            <div class="tab-content" id="updateTab">
+                <div class="update-section">
+                    <h3>Toplu Fiyat Güncelleme</h3>
+                    <p class="info-text">Sadece fiyat sütunu olan Excel dosyası yükleyin: <strong>Ürün Adı, Yeni
+                            Fiyat</strong></p>
+                    <input type="file" id="priceFile" accept=".xlsx,.xls" class="file-input">
+                    <button class="btn btn-primary" id="updatePriceBtn">Fiyatları Güncelle</button>
+                    <div id="updateStatus" class="status-message"></div>
+                </div>
+            </div>
+
+            <!-- Categories Tab -->
+            <div class="tab-content" id="categoriesTab">
+                <div class="categories-section">
+                    <h3>Kategori Yönetimi</h3>
+                    <p class="info-text">Mevcut kategorilerinizi görüntüleyin ve yeni alt kategoriler ekleyin.</p>
+
+                    <div class="category-management">
+                        <div class="category-group">
+                            <h4>İçecekler Kategorileri</h4>
+                            <div id="iceceklerCategories" class="category-list-display">
+                                <!-- Will be populated by JavaScript -->
+                            </div>
+                            <div class="add-category-form">
+                                <input type="text" id="newIceceklerCategory" class="form-input"
+                                    placeholder="Yeni kategori adı">
+                                <button class="btn btn-primary" onclick="addSubCategory('İçecekler')">+ Ekle</button>
+                            </div>
+                        </div>
+
+                        <div class="category-group">
+                            <h4>Yiyecekler Kategorileri</h4>
+                            <div id="yiyeceklerCategories" class="category-list-display">
+                                <!-- Will be populated by JavaScript -->
+                            </div>
+                            <div class="add-category-form">
+                                <input type="text" id="newYiyeceklerCategory" class="form-input"
+                                    placeholder="Yeni kategori adı">
+                                <button class="btn btn-primary" onclick="addSubCategory('Yiyecekler')">+ Ekle</button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div id="categoryStatus" class="status-message"></div>
+                </div>
+            </div>
+
+            <!-- Manage Tab -->
+            <div class="tab-content" id="manageTab">
+                <div class="manage-section">
+                    <div class="manage-header">
+                        <h3>Ürün Listesi</h3>
+                        <button class="btn btn-primary" id="openAddProductBtn">+ Yeni Ürün Ekle</button>
+                    </div>
+                    <div class="search-box">
+                        <input type="text" id="searchProduct" placeholder="Ürün ara...">
+                    </div>
+                    <div class="product-list" id="productList">
+                        <!-- Product list will be loaded here -->
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Edit Product Modal -->
+    <div class="modal" id="editProductModal">
+        <div class="modal-content edit-modal-content">
+            <div class="modal-header">
+                <h2>Ürün Düzenle</h2>
+                <button class="close-btn" id="closeEditModal">&times;</button>
+            </div>
+            <div class="modal-body">
+                <div class="form-group">
+                    <label for="editProductName">Ürün Adı:</label>
+                    <input type="text" id="editProductName" class="form-input" readonly>
+                </div>
+                <div class="form-group">
+                    <label for="editProductMainCategory">Ana Kategori:</label>
+                    <select id="editProductMainCategory" class="form-input">
+                        <option value="İçecekler">İçecekler</option>
+                        <option value="Yiyecekler">Yiyecekler</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label for="editProductSubCategory">Alt Kategori:</label>
+                    <input type="text" id="editProductSubCategory" class="form-input">
+                </div>
+                <div class="form-group">
+                    <label for="editProductDescription">Açıklama:</label>
+                    <textarea id="editProductDescription" class="form-input" rows="3"></textarea>
+                </div>
+                <div class="form-group">
+                    <label for="editProductPrice">Fiyat (₺):</label>
+                    <input type="number" id="editProductPrice" class="form-input" step="0.01" min="0">
+                </div>
+                <!-- Image Section -->
+                <div class="form-group">
+                    <label for="editProductImage">Resim URL:</label>
+                    <input type="text" id="editProductImage" class="form-input" placeholder="https://...">
+                </div>
+                <div class="form-group">
+                    <label>Veya Bilgisayardan Yükle:</label>
+                    <input type="file" id="editProductImageFile" accept="image/*" class="file-input">
+                </div>
+                <button class="btn btn-primary" id="saveEditBtn">Kaydet</button>
+                <div id="editStatus" class="status-message"></div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Add New Product Modal -->
+    <div class="modal" id="addProductModal">
+        <div class="modal-content edit-modal-content">
+            <div class="modal-header">
+                <h2>Yeni Ürün Ekle</h2>
+                <button class="close-btn" id="closeAddModal">&times;</button>
+            </div>
+            <div class="modal-body">
+                <div class="form-group">
+                    <label for="addProductName">Ürün Adı: *</label>
+                    <input type="text" id="addProductName" class="form-input" placeholder="Örn: Türk Kahvesi" required>
+                </div>
+                <div class="form-group">
+                    <label for="addProductMainCategory">Ana Kategori: *</label>
+                    <select id="addProductMainCategory" class="form-input" required>
+                        <option value="">Seçiniz...</option>
+                        <option value="İçecekler">İçecekler</option>
+                        <option value="Yiyecekler">Yiyecekler</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label for="addProductSubCategory">Alt Kategori: *</label>
+                    <select id="addProductSubCategory" class="form-input" required>
+                        <option value="">Önce ana kategori seçin...</option>
+                    </select>
+                    <small class="help-text">Veya yeni kategori adı yazın:</small>
+                    <input type="text" id="addProductSubCategoryCustom" class="form-input"
+                        placeholder="Yeni kategori adı">
+                </div>
+                <div class="form-group">
+                    <label for="addProductDescription">Açıklama:</label>
+                    <textarea id="addProductDescription" class="form-input" rows="3"
+                        placeholder="Ürün açıklaması, malzemeler..."></textarea>
+                </div>
+                <div class="form-group">
+                    <label for="addProductPrice">Fiyat (₺): *</label>
+                    <input type="number" id="addProductPrice" class="form-input" step="0.01" min="0" placeholder="0.00"
+                        required>
+                </div>
+                <!-- Image Section -->
+                <div class="form-group">
+                    <label for="addProductImage">Resim URL:</label>
+                    <input type="text" id="addProductImage" class="form-input" placeholder="https://...">
+                </div>
+                <div class="form-group">
+                    <label>Veya Bilgisayardan Yükle:</label>
+                    <input type="file" id="addProductImageFile" accept="image/*" class="file-input">
+                </div>
+
+                <button class="btn btn-primary" id="saveAddBtn">Ürün Ekle</button>
+                <div id="addStatus" class="status-message"></div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Include XLSX library for Excel parsing -->
+    <script src="https://cdn.sheetjs.com/xlsx-0.20.1/package/dist/xlsx.full.min.js"></script>
+    <script src="app.js"></script>
+</body>
+
+</html>

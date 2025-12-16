@@ -3,187 +3,207 @@
 
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Örnek Excel Oluştur</title>
+    <title>Excel Şablon İndirme</title>
     <style>
         body {
             font-family: 'Inter', sans-serif;
             max-width: 800px;
             margin: 50px auto;
             padding: 20px;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            min-height: 100vh;
+            background: #f5f5f5;
         }
 
-        .container {
+        .template-section {
             background: white;
-            padding: 40px;
-            border-radius: 16px;
-            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.2);
+            padding: 30px;
+            margin: 20px 0;
+            border-radius: 10px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
         }
 
         h1 {
-            color: #2d3748;
-            margin-bottom: 30px;
+            color: #333;
         }
 
-        .btn {
-            display: inline-block;
-            padding: 15px 30px;
-            margin: 10px;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        h2 {
+            color: #667eea;
+            margin-top: 0;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 20px 0;
+        }
+
+        th,
+        td {
+            border: 1px solid #ddd;
+            padding: 12px;
+            text-align: left;
+        }
+
+        th {
+            background: #667eea;
             color: white;
-            border: none;
-            border-radius: 8px;
-            font-size: 16px;
-            font-weight: 600;
-            cursor: pointer;
-            transition: all 0.3s ease;
-            text-decoration: none;
         }
 
-        .btn:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 4px 16px rgba(0, 0, 0, 0.2);
+        .download-btn {
+            background: #667eea;
+            color: white;
+            padding: 12px 24px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 16px;
+            margin: 10px 5px;
+        }
+
+        .download-btn:hover {
+            background: #5568d3;
         }
 
         .info {
-            background: #e0e7ff;
-            padding: 20px;
-            border-radius: 8px;
-            margin: 20px 0;
-            border-left: 4px solid #667eea;
-        }
-
-        .back-link {
-            display: inline-block;
-            margin-top: 20px;
-            color: #667eea;
-            text-decoration: none;
-            font-weight: 600;
-        }
-
-        .back-link:hover {
-            text-decoration: underline;
+            background: #e3f2fd;
+            padding: 15px;
+            border-left: 4px solid #2196f3;
+            margin: 15px 0;
         }
     </style>
+    <script src="https://cdn.sheetjs.com/xlsx-0.20.1/package/dist/xlsx.full.min.js"></script>
 </head>
 
 <body>
-    <div class="container">
-        <h1>📊 Örnek Excel Dosyaları</h1>
+    <h1>Excel Şablon İndirme Sayfası</h1>
 
+    <div class="template-section">
+        <h2>📊 Toplu Ürün Yükleme Şablonu</h2>
         <div class="info">
-            <h3>📝 Ürün Ekleme Şablonu</h3>
-            <p>Bu şablon ile toplu ürün ekleyebilirsiniz. Şablon şu sütunları içerir:</p>
-            <ul>
-                <li><strong>Ana Kategori:</strong> İçecekler veya Yiyecekler</li>
-                <li><strong>Alt Kategori:</strong> Bitki Çayları, Espresso Bar, Tatlılar vb.</li>
-                <li><strong>Ürün Adı:</strong> Ürünün adı</li>
-                <li><strong>Açıklama:</strong> Ürün açıklaması</li>
-                <li><strong>Fiyat:</strong> Ürün fiyatı (TL)</li>
-                <li><strong>Resim URL:</strong> Ürün resmi (opsiyonel)</li>
-            </ul>
-            <button class="btn" onclick="downloadProductTemplate()">📥 Ürün Şablonunu İndir</button>
+            <strong>Kullanım:</strong> Bu şablonu kullanarak ürünlerinizi toplu olarak sisteme yükleyebilirsiniz.
         </div>
 
-        <div class="info">
-            <h3>💰 Fiyat Güncelleme Şablonu</h3>
-            <p>Bu şablon ile sadece fiyatları güncelleyebilirsiniz. Şablon şu sütunları içerir:</p>
-            <ul>
-                <li><strong>Ürün Adı:</strong> Güncellenecek ürünün adı</li>
-                <li><strong>Yeni Fiyat:</strong> Yeni fiyat (TL)</li>
-            </ul>
-            <button class="btn" onclick="downloadPriceTemplate()">📥 Fiyat Şablonunu İndir</button>
-        </div>
-
-        <a href="index.html" class="back-link">← Ana Sayfaya Dön</a>
+        <h3>Örnek Veri:</h3>
+        <table id="fullTemplate">
+            <thead>
+                <tr>
+                    <th>Ana Kategori</th>
+                    <th>Alt Kategori</th>
+                    <th>Ürün Adı</th>
+                    <th>Açıklama</th>
+                    <th>Fiyat</th>
+                    <th>Resim URL</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td>İçecekler</td>
+                    <td>Sıcak Kahveler</td>
+                    <td>Türk Kahvesi</td>
+                    <td>Geleneksel Türk kahvesi</td>
+                    <td>45</td>
+                    <td></td>
+                </tr>
+                <tr>
+                    <td>İçecekler</td>
+                    <td>Sıcak Kahveler</td>
+                    <td>Latte</td>
+                    <td>Susamam süt ve espresso</td>
+                    <td>55</td>
+                    <td></td>
+                </tr>
+                <tr>
+                    <td>Yiyecekler</td>
+                    <td>Tatlılar</td>
+                    <td>Tiramisu</td>
+                    <td>İtalyan tatlısı</td>
+                    <td>75</td>
+                    <td></td>
+                </tr>
+            </tbody>
+        </table>
+        <button class="download-btn" onclick="downloadFullTemplate()">📥 Toplu Ürün Şablonunu İndir (XLSX)</button>
     </div>
 
-    <script src="https://cdn.sheetjs.com/xlsx-0.20.1/package/dist/xlsx.full.min.js"></script>
+    <div class="template-section">
+        <h2>💰 Fiyat Güncelleme Şablonu</h2>
+        <div class="info">
+            <strong>Kullanım:</strong> Sadece fiyatları güncellemek için bu şablonu kullanın.
+        </div>
+
+        <h3>Örnek Veri:</h3>
+        <table id="priceTemplate">
+            <thead>
+                <tr>
+                    <th>Ürün Adı</th>
+                    <th>Yeni Fiyat</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td>Türk Kahvesi</td>
+                    <td>50</td>
+                </tr>
+                <tr>
+                    <td>Latte</td>
+                    <td>60</td>
+                </tr>
+                <tr>
+                    <td>Tiramisu</td>
+                    <td>80</td>
+                </tr>
+            </tbody>
+        </table>
+        <button class="download-btn" onclick="downloadPriceTemplate()">📥 Fiyat Güncelleme Şablonunu İndir
+            (XLSX)</button>
+    </div>
+
     <script>
-        function downloadProductTemplate() {
-            const sampleData = [
-                {
-                    'Ana Kategori': 'İçecekler',
-                    'Alt Kategori': 'Bitki Çayları',
-                    'Ürün Adı': 'Coco Chai',
-                    'Açıklama': 'kakao çekirdekleri, rooibos, tarçın, badem, limon otu',
-                    'Fiyat': 245,
-                    'Resim URL': ''
-                },
-                {
-                    'Ana Kategori': 'İçecekler',
-                    'Alt Kategori': 'Bitki Çayları',
-                    'Ürün Adı': 'Vanilla Rooibos',
-                    'Açıklama': 'rooibos, çubuk vanilya',
-                    'Fiyat': 245,
-                    'Resim URL': ''
-                },
-                {
-                    'Ana Kategori': 'İçecekler',
-                    'Alt Kategori': 'Espresso Bar',
-                    'Ürün Adı': 'Espresso',
-                    'Açıklama': 'Klasik espresso',
-                    'Fiyat': 40,
-                    'Resim URL': ''
-                },
-                {
-                    'Ana Kategori': 'İçecekler',
-                    'Alt Kategori': 'Soğuk İçecekler',
-                    'Ürün Adı': 'Limonata',
-                    'Açıklama': 'Taze sıkılmış limonata',
-                    'Fiyat': 45,
-                    'Resim URL': ''
-                },
-                {
-                    'Ana Kategori': 'Yiyecekler',
-                    'Alt Kategori': 'Tatlılar',
-                    'Ürün Adı': 'Cheesecake',
-                    'Açıklama': 'Ev yapımı cheesecake',
-                    'Fiyat': 85,
-                    'Resim URL': ''
-                },
-                {
-                    'Ana Kategori': 'Yiyecekler',
-                    'Alt Kategori': 'Tatlılar',
-                    'Ürün Adı': 'Brownie',
-                    'Açıklama': 'Çikolatalı brownie',
-                    'Fiyat': 65,
-                    'Resim URL': ''
-                }
+        function downloadFullTemplate() {
+            // Create workbook
+            const wb = XLSX.utils.book_new();
+
+            // Create data
+            const data = [
+                ['Ana Kategori', 'Alt Kategori', 'Ürün Adı', 'Açıklama', 'Fiyat', 'Resim URL'],
+                ['İçecekler', 'Sıcak Kahveler', 'Türk Kahvesi', 'Geleneksel Türk kahvesi', 45, ''],
+                ['İçecekler', 'Sıcak Kahveler', 'Latte', 'Sıcak süt ve espresso', 55, ''],
+                ['İçecekler', 'Soğuk Kahveler', 'Ice Americano', 'Buzlu americano', 50, ''],
+                ['Yiyecekler', 'Tatlılar', 'Tiramisu', 'İtalyan tatlısı', 75, ''],
+                ['Yiyecekler', 'Sandviçler', 'Karışık Tost', 'Kaşar, sucuk, sosis', 65, '']
             ];
 
-            const ws = XLSX.utils.json_to_sheet(sampleData);
-            const wb = XLSX.utils.book_new();
+            // Create worksheet
+            const ws = XLSX.utils.aoa_to_sheet(data);
+
+            // Add worksheet to workbook
             XLSX.utils.book_append_sheet(wb, ws, 'Ürünler');
-            XLSX.writeFile(wb, 'ornek-urunler.xlsx');
+
+            // Download
+            XLSX.writeFile(wb, 'qr-menu-urunler.xlsx');
         }
 
         function downloadPriceTemplate() {
-            const sampleData = [
-                {
-                    'Ürün Adı': 'Türk Kahvesi',
-                    'Yeni Fiyat': 50
-                },
-                {
-                    'Ürün Adı': 'Filtre Kahve',
-                    'Yeni Fiyat': 60
-                },
-                {
-                    'Ürün Adı': 'Cheesecake',
-                    'Yeni Fiyat': 90
-                },
-                {
-                    'Ürün Adı': 'Papatya Çayı',
-                    'Yeni Fiyat': 40
-                }
+            // Create workbook
+            const wb = XLSX.utils.book_new();
+
+            // Create data
+            const data = [
+                ['Ürün Adı', 'Yeni Fiyat'],
+                ['Türk Kahvesi', 50],
+                ['Latte', 60],
+                ['Ice Americano', 55],
+                ['Tiramisu', 80],
+                ['Karışık Tost', 70]
             ];
 
-            const ws = XLSX.utils.json_to_sheet(sampleData);
-            const wb = XLSX.utils.book_new();
+            // Create worksheet
+            const ws = XLSX.utils.aoa_to_sheet(data);
+
+            // Add worksheet to workbook
             XLSX.utils.book_append_sheet(wb, ws, 'Fiyatlar');
-            XLSX.writeFile(wb, 'ornek-fiyat-guncelleme.xlsx');
+
+            // Download
+            XLSX.writeFile(wb, 'qr-menu-fiyat-guncelleme.xlsx');
         }
     </script>
 </body>
