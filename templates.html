@@ -1,0 +1,191 @@
+<!DOCTYPE html>
+<html lang="tr">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Örnek Excel Oluştur</title>
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+            max-width: 800px;
+            margin: 50px auto;
+            padding: 20px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+        }
+
+        .container {
+            background: white;
+            padding: 40px;
+            border-radius: 16px;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.2);
+        }
+
+        h1 {
+            color: #2d3748;
+            margin-bottom: 30px;
+        }
+
+        .btn {
+            display: inline-block;
+            padding: 15px 30px;
+            margin: 10px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            border-radius: 8px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-decoration: none;
+        }
+
+        .btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 16px rgba(0, 0, 0, 0.2);
+        }
+
+        .info {
+            background: #e0e7ff;
+            padding: 20px;
+            border-radius: 8px;
+            margin: 20px 0;
+            border-left: 4px solid #667eea;
+        }
+
+        .back-link {
+            display: inline-block;
+            margin-top: 20px;
+            color: #667eea;
+            text-decoration: none;
+            font-weight: 600;
+        }
+
+        .back-link:hover {
+            text-decoration: underline;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container">
+        <h1>📊 Örnek Excel Dosyaları</h1>
+
+        <div class="info">
+            <h3>📝 Ürün Ekleme Şablonu</h3>
+            <p>Bu şablon ile toplu ürün ekleyebilirsiniz. Şablon şu sütunları içerir:</p>
+            <ul>
+                <li><strong>Ana Kategori:</strong> İçecekler veya Yiyecekler</li>
+                <li><strong>Alt Kategori:</strong> Bitki Çayları, Espresso Bar, Tatlılar vb.</li>
+                <li><strong>Ürün Adı:</strong> Ürünün adı</li>
+                <li><strong>Açıklama:</strong> Ürün açıklaması</li>
+                <li><strong>Fiyat:</strong> Ürün fiyatı (TL)</li>
+                <li><strong>Resim URL:</strong> Ürün resmi (opsiyonel)</li>
+            </ul>
+            <button class="btn" onclick="downloadProductTemplate()">📥 Ürün Şablonunu İndir</button>
+        </div>
+
+        <div class="info">
+            <h3>💰 Fiyat Güncelleme Şablonu</h3>
+            <p>Bu şablon ile sadece fiyatları güncelleyebilirsiniz. Şablon şu sütunları içerir:</p>
+            <ul>
+                <li><strong>Ürün Adı:</strong> Güncellenecek ürünün adı</li>
+                <li><strong>Yeni Fiyat:</strong> Yeni fiyat (TL)</li>
+            </ul>
+            <button class="btn" onclick="downloadPriceTemplate()">📥 Fiyat Şablonunu İndir</button>
+        </div>
+
+        <a href="index.html" class="back-link">← Ana Sayfaya Dön</a>
+    </div>
+
+    <script src="https://cdn.sheetjs.com/xlsx-0.20.1/package/dist/xlsx.full.min.js"></script>
+    <script>
+        function downloadProductTemplate() {
+            const sampleData = [
+                {
+                    'Ana Kategori': 'İçecekler',
+                    'Alt Kategori': 'Bitki Çayları',
+                    'Ürün Adı': 'Coco Chai',
+                    'Açıklama': 'kakao çekirdekleri, rooibos, tarçın, badem, limon otu',
+                    'Fiyat': 245,
+                    'Resim URL': ''
+                },
+                {
+                    'Ana Kategori': 'İçecekler',
+                    'Alt Kategori': 'Bitki Çayları',
+                    'Ürün Adı': 'Vanilla Rooibos',
+                    'Açıklama': 'rooibos, çubuk vanilya',
+                    'Fiyat': 245,
+                    'Resim URL': ''
+                },
+                {
+                    'Ana Kategori': 'İçecekler',
+                    'Alt Kategori': 'Espresso Bar',
+                    'Ürün Adı': 'Espresso',
+                    'Açıklama': 'Klasik espresso',
+                    'Fiyat': 40,
+                    'Resim URL': ''
+                },
+                {
+                    'Ana Kategori': 'İçecekler',
+                    'Alt Kategori': 'Soğuk İçecekler',
+                    'Ürün Adı': 'Limonata',
+                    'Açıklama': 'Taze sıkılmış limonata',
+                    'Fiyat': 45,
+                    'Resim URL': ''
+                },
+                {
+                    'Ana Kategori': 'Yiyecekler',
+                    'Alt Kategori': 'Tatlılar',
+                    'Ürün Adı': 'Cheesecake',
+                    'Açıklama': 'Ev yapımı cheesecake',
+                    'Fiyat': 85,
+                    'Resim URL': ''
+                },
+                {
+                    'Ana Kategori': 'Yiyecekler',
+                    'Alt Kategori': 'Tatlılar',
+                    'Ürün Adı': 'Brownie',
+                    'Açıklama': 'Çikolatalı brownie',
+                    'Fiyat': 65,
+                    'Resim URL': ''
+                }
+            ];
+
+            const ws = XLSX.utils.json_to_sheet(sampleData);
+            const wb = XLSX.utils.book_new();
+            XLSX.utils.book_append_sheet(wb, ws, 'Ürünler');
+            XLSX.writeFile(wb, 'ornek-urunler.xlsx');
+        }
+
+        function downloadPriceTemplate() {
+            const sampleData = [
+                {
+                    'Ürün Adı': 'Türk Kahvesi',
+                    'Yeni Fiyat': 50
+                },
+                {
+                    'Ürün Adı': 'Filtre Kahve',
+                    'Yeni Fiyat': 60
+                },
+                {
+                    'Ürün Adı': 'Cheesecake',
+                    'Yeni Fiyat': 90
+                },
+                {
+                    'Ürün Adı': 'Papatya Çayı',
+                    'Yeni Fiyat': 40
+                }
+            ];
+
+            const ws = XLSX.utils.json_to_sheet(sampleData);
+            const wb = XLSX.utils.book_new();
+            XLSX.utils.book_append_sheet(wb, ws, 'Fiyatlar');
+            XLSX.writeFile(wb, 'ornek-fiyat-guncelleme.xlsx');
+        }
+    </script>
+</body>
+
+</html>
